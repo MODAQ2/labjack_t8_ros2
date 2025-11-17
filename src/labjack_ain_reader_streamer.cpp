@@ -4,9 +4,9 @@
  * @brief ros node for streaming analog data from a Labjack T8 device
  * @version 0.1
  * @date 2024-10-02
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #include <chrono>
 #include <functional>
@@ -20,6 +20,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/qos.hpp"
 #include <pthread.h>
+#include <chrono>
 
 #include "modaq_messages/msg/t8ainstream.hpp"
 #include "modaq_messages/msg/systemmsg.hpp"
@@ -101,11 +102,18 @@ public:
 
       // Read data from LabJack
       err = LJM_eStreamRead(handle, aData, &deviceScanBacklog, &LJMScanBacklog);
+      auto now = std::chrono::system_clock::now();
+      uint64_t streamtN = std::chrono::time_point_cast<std::chrono::nanoseconds>(now).time_since_epoch().count();
+      uint64_t streamt0 = streamtN - (waveformPeriod * 1000000000LL);
+      uint64_t sec = streamt0 / 1'000'000'000ULL;
+      uint64_t nsec = streamt0 % 1'000'000'000ULL;
+      rclcpp::Time ros_time(sec, nsec, RCL_SYSTEM_TIME);
+
       // Set t0 timestamp in the message
-      streamtN = now();
-      streamt0 = subtractSecondsFromTime(streamtN, waveformPeriod);
-      msg.header.set__stamp(streamt0);
+      msg.header.set__stamp(ros_time);
       ErrorCheck(err, "LJM_eStreamRead");
+
+      int ii = 0;
 
       // Process data from each channel and store in vectors
       for (uint channel = 0; channel <= aDataSize - NUM_CHANNELS; channel += NUM_CHANNELS)
@@ -135,6 +143,9 @@ public:
         }
         last_core_timer = core_timer_read;
         data_vector_system_time.push_back((extended_core_timer * 10) + core_timer_2_utc_offset);
+
+        data_vector_recv_time_calc.push_back(streamt0 + (ii / INIT_SCAN_RATE) * 1e9);
+        ii++;
         // std::cout << "core_timer_read: " << core_timer_read << " core_timer_2_utc_offset: " << core_timer_2_utc_offset << " extended_core_timer: " << extended_core_timer << " system_time: " << (extended_core_timer * 10) + core_timer_2_utc_offset << std::endl;
       }
 
@@ -149,6 +160,9 @@ public:
       msg.set__ain7(data_vector_ain7);
       msg.set__core_timer(data_vector_core_timer);
       msg.set__system_time(data_vector_system_time);
+      msg.set__recv_time_calc(data_vector_recv_time_calc);
+      msg.set__ns_recv_time(streamtN);
+      
 
       // Clear vectors for next read
       data_vector_ain0.clear();
@@ -161,6 +175,7 @@ public:
       data_vector_ain7.clear();
       data_vector_core_timer.clear();
       data_vector_system_time.clear();
+      data_vector_recv_time_calc.clear();
 
       // Count and report skipped scans
       numSkippedScans = CountAndOutputNumSkippedScans(NUM_CHANNELS, SCANS_PER_READ, aData);
@@ -171,7 +186,7 @@ public:
           RCLCPP_INFO(this->get_logger(), "LJMBacklog: %d; deviceBacklog: %d; Total skipped: %d, error: %d", LJMScanBacklog, deviceScanBacklog, totalSkippedScans, err);
           for (int j = 0; j < NUM_CHANNELS * SCANS_PER_READ; j++)
           {
-            std::cout << "aData" << j << ": " << aData[j] << std::endl;
+            // std::cout << "aData" << j << ": " << aData[j] << std::endl;
           }
         }
       }
@@ -273,23 +288,6 @@ private:
     printf("\n");
   }
 
-  double getCurrentTimeInSeconds()
-  {
-    // Get current time in seconds since epoch
-    auto now = std::chrono::system_clock::now();
-    auto duration = now.time_since_epoch();
-    return std::chrono::duration<double>(duration).count();
-  }
-  rclcpp::Time subtractSecondsFromTime(const rclcpp::Time &time, const double &seconds)
-  {
-    // Convert seconds to nanoseconds
-    std::chrono::nanoseconds nanoseconds_to_subtract = static_cast<std::chrono::nanoseconds>(uint64_t(seconds * 1000000000LL));
-
-    // Subtract nanoseconds from the original time
-    rclcpp::Time result = time - rclcpp::Duration(nanoseconds_to_subtract);
-
-    return result;
-  }
   void set_thread_priority()
   {
     struct sched_param param;
@@ -337,6 +335,7 @@ private:
   std::vector<double> data_vector_ain7;
   std::vector<uint64_t> data_vector_core_timer;
   std::vector<uint64_t> data_vector_system_time;
+  std::vector<uint64_t> data_vector_recv_time_calc;
 
   std::vector<double> channelScales;
   std::vector<double> channelOffsets;
