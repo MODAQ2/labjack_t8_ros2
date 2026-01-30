@@ -1,6 +1,6 @@
 /**
  * @file labjack_reader_streamer.cpp
- * @author Casey Nichols (casey.nichols@nrel.gov)
+ * @author Casey Nichols (casey.nichols@nlr.gov)
  * @brief ros node for reading single analog datapoints from a Labjack T8 device
  * Purpose:
  *   1. Read the state of the DIO on the T8

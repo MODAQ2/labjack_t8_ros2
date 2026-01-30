@@ -1,6 +1,6 @@
 /**
  * @file labjack_do_node.cpp
- * @author Robert Raye (robert.raye@nrel.gov)
+ * @author Robert Raye (robert.raye@nlr.gov)
  * @brief ros node for writing digital output values from a Labjack T8 device
  * @version 0.1
  * @date 2024-10-02

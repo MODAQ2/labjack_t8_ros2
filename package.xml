@@ -4,7 +4,7 @@
   <name>labjack_t8_ros2</name>
   <version>0.0.1</version>
   <description>This package provides multiple nodes for interfacing with the labjack t8</description>
-  <maintainer email="casey.nichols@nrel.gov">m2</maintainer>
+  <maintainer email="casey.nichols@nlr.gov">m2</maintainer>
   <license>BSD 3-Clause License</license>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
