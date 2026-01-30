@@ -1,6 +1,6 @@
 /**
  * @file labjack_dac_writer.cpp
- * @author Casey Nichols (casey.nichols@nrel.gov)
+ * @author Casey Nichols (casey.nichols@nlr.gov)
  * @brief ros node for writing an analog output value to a Labjack T8 device
  * @version 0.1
  * @date 2024-10-02
