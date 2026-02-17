@@ -22,6 +22,7 @@
 
 
 #include <iostream>
+#include <string>
 #include "rclcpp/rclcpp.hpp"
 #include "modaq_messages/msg/t8dac.hpp"
 
@@ -41,9 +42,7 @@ public:
     this->declare_parameter<std::string>("dacTopic", "/T8dac");
     std::string subTopic = this->get_parameter("dacTopic").as_string();
     this->declare_parameter<std::string>("analogOutTag", "TDAC0");
-    std::string analogOutTag = this->get_parameter("analogOutTag").as_string();
-
-    aNames =  analogOutTag.c_str();  
+    aNames = this->get_parameter("analogOutTag").as_string();  
 
     dac_sub_ = this->create_subscription<modaq_messages::msg::T8dac>(subTopic, 10, std::bind(&LabJack_DAC_Writer::action_callback, this, _1));
 
@@ -51,12 +50,12 @@ public:
     PrintDeviceInfoFromHandle(handle);
 
     //Set all Outputs to Low to start
-    err = LJM_eWriteName(handle, aNames, 0.0);
+    err = LJM_eWriteName(handle, aNames.c_str(), 0.0);
   }
 
   ~LabJack_DAC_Writer()
   {
-    err = LJM_eWriteName(handle, aNames, 0.0);
+    err = LJM_eWriteName(handle, aNames.c_str(), 0.0);
     CloseOrDie(handle);
   }
 
@@ -69,7 +68,7 @@ private:
 
 
 
-    err = LJM_eWriteName(handle, aNames, aValues);
+    err = LJM_eWriteName(handle, aNames.c_str(), aValues);
 
     char errstring [1024];
 
@@ -81,7 +80,7 @@ private:
   }
 
   int err, errorAddress, handle;
-  const char *aNames; // channel names to write per LJM
+  std::string aNames; // channel name to write per LJM
   float aValues = 0;
   rclcpp::Subscription<modaq_messages::msg::T8dac>::SharedPtr dac_sub_;
   rclcpp::TimerBase::SharedPtr timer_;
