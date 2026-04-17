@@ -1,0 +1,59 @@
+name: Ubuntu 22.04 ARM64
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04-arm
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: src/labjack_t8_ros2
+
+      - name: Setup ROS 2 Humble
+        uses: ros-tooling/setup-ros@v0.7
+        with:
+          required-ros-distributions: humble
+
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          git \
+          wget \
+          tree \
+          unzip
+
+      - name: Clone m2_core
+        uses: actions/checkout@v4
+        with:
+          repository: MODAQ2/m2_core
+          path: m2_core/src/modaq_messages
+      
+      - name: Build LJM
+        run: |
+          wget https://files.labjack.com/installers/LJM/Linux/AArch64/release/LabJack-LJM_2025-05-07.zip
+          unzip LabJack-LJM_2025-05-07.zip
+          sudo ./labjack_ljm_installer.run --noexec -- --without-kipling --no-restart-device-rules
+        shell: bash
+
+      - name: Build
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --packages-up-to labjack_t8_ros2
+        shell: bash
+
+      - name: Confirm Build
+        run: | 
+          ls -a
+          tree
+        shell: bash
