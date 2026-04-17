@@ -1,0 +1,51 @@
+name: Ubuntu 24.04 x64
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: src/labjack_t8_ros2
+
+      - name: Setup ROS 2 Jazzy
+        uses: ros-tooling/setup-ros@v0.7
+        with:
+          required-ros-distributions: jazzy
+
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          git \
+          wget \
+          unzip
+
+      - name: Clone m2_core
+        uses: actions/checkout@v4
+        with:
+          repository: MODAQ2/m2_core
+          path: m2_core/src/modaq_messages
+          
+      - name: Build LJM
+        run: 
+          wget https://files.labjack.com/installers/LJM/Linux/x64/release/LabJack-LJM_2025-05-07.zip
+          unzip LabJack-LJM_2025-05-07.zip
+          sudo ./labjack_ljm_installer.run --noexec  -- --without-kipling --no-restart-device-rules
+
+      - name: Build
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          colcon build --packages-up-to labjack_t8_ros2
+        shell: bash
