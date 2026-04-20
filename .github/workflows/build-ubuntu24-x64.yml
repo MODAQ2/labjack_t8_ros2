@@ -51,11 +51,11 @@ jobs:
       - name: install LJM
         run: |
           sudo chmod +x ./ljm/labjack_ljm_installer.run
-          sudo ./ljm/labjack_ljm_installer.run --noexec  -- --without-kipling --no-restart-device-rules
+          sudo ./ljm/labjack_ljm_installer.run  -- --without-kipling --no-restart-device-rules
 
       - name: Confirm LJM
         run: | 
-          ls /usr/local/lib/libLabJackM*
+          sudo ls /usr/local/lib/libLabJackM*
 
       - name: Build
         run: |
