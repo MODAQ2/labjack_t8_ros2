@@ -41,10 +41,12 @@ jobs:
       
       - name: Build LJM
         run: |
-          wget https://files.labjack.com/installers/LJM/Linux/AArch64/release/LabJack-LJM_2025-05-07.zip
-          unzip LabJack-LJM_2025-05-07.zip
-          sudo ./labjack_ljm_installer.run --noexec -- --without-kipling --no-restart-device-rules
+          wget https://files.labjack.com/installers/LJM/Linux/AArch64/release/LabJack-LJM_2025-05-07.zip 
+          unzip LabJack-LJM_2025-05-07.zip 
+          sudo ./labjack_ljm_installer.run --noexec  -- --without-kipling --no-restart-device-rules
         shell: bash
+
+
 
       - name: Build
         run: |
@@ -56,4 +58,4 @@ jobs:
         run: | 
           ls -a
           tree
-        shell: bash
+        shell : bash

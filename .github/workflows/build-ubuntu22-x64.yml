@@ -40,11 +40,12 @@ jobs:
           path: m2_core/src/modaq_messages
           
       - name: Build LJM
-        run: |
-          wget https://files.labjack.com/installers/LJM/Linux/x64/release/LabJack-LJM_2025-05-07.zip
-          unzip LabJack-LJM_2025-05-07.zip
-          sudo ./labjack_ljm_installer.run --noexec -- --without-kipling --no-restart-device-rules
+        run: 
+          wget https://files.labjack.com/installers/LJM/Linux/x64/release/LabJack-LJM_2025-05-07.zip 
+          unzip LabJack-LJM_2025-05-07.zip 
+          sudo ./labjack_ljm_installer.run --noexec  -- --without-kipling --no-restart-device-rules
         shell: bash
+
 
       - name: Build
         run: |
@@ -56,4 +57,4 @@ jobs:
         run: | 
           ls -a
           tree
-        shell: bash
+        shell : bash
