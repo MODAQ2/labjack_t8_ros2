@@ -39,13 +39,23 @@ jobs:
           repository: MODAQ2/m2_core
           path: m2_core/src/modaq_messages
           
-      - name: Build LJM
-        run: 
+      - name: Download LJM
+        run: |
           wget https://files.labjack.com/installers/LJM/Linux/x64/release/LabJack-LJM_2025-05-07.zip 
-          unzip LabJack-LJM_2025-05-07.zip 
-          sudo ./labjack_ljm_installer.run --noexec  -- --without-kipling --no-restart-device-rules
-        shell: bash
 
+      - name: unzip LJM
+        run: |
+          mkdir ./ljm
+          unzip LabJack-LJM_2025-05-07.zip -d ./ljm
+
+      - name: install LJM
+        run: |
+          sudo chmod +x ./ljm/labjack_ljm_installer.run
+          sudo ./ljm/labjack_ljm_installer.run --noexec  -- --without-kipling --no-restart-device-rules
+
+      - name: Confirm LJM
+        run: | 
+          ls /usr/local/lib/libLabJackM*
 
       - name: Build
         run: |
