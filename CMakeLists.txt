@@ -21,7 +21,7 @@ add_executable(labjack_do_node src/labjack_do_node.cpp)
 add_executable(labjack_hmi_control src/labjack_hmi_control_node.cpp)
 add_executable(labjack_dio_reader src/labjack_dio_state_node.cpp)
 add_executable(labjack_dac_writer src/labjack_dac_writer.cpp)
-
+add_executable(time_synchronziation_node src/time_synchronziation_node.cpp)
 
 include_directories(include ${CMAKE_CURRENT_SOURCE_DIR}/include/labjack_t8_ros)
 ament_target_dependencies(labjack_ain_streamer rclcpp std_msgs modaq_messages)
@@ -32,7 +32,7 @@ ament_target_dependencies(labjack_do_node rclcpp std_msgs modaq_messages)
 ament_target_dependencies(labjack_hmi_control rclcpp std_msgs modaq_messages)
 ament_target_dependencies(labjack_dio_reader rclcpp std_msgs modaq_messages)
 ament_target_dependencies(labjack_dac_writer rclcpp std_msgs modaq_messages)
-
+ament_target_dependencies(time_synchronziation_node rclcpp std_msgs modaq_messages)
 
 target_link_libraries(labjack_ain_streamer /usr/local/lib/libLabJackM.so)
 target_link_libraries(labjack_ain_reader /usr/local/lib/libLabJackM.so)
@@ -42,6 +42,8 @@ target_link_libraries(labjack_dio_reader /usr/local/lib/libLabJackM.so)
 target_link_libraries(labjack_dio_reader "${cpp_typesupport_target}")
 target_link_libraries(labjack_dac_writer /usr/local/lib/libLabJackM.so)
 target_link_libraries(labjack_dac_writer "${cpp_typesupport_target}")
+target_link_libraries(time_synchronziation_node /usr/local/lib/libLabJackM.so.1.23.4)
+target_link_libraries(time_synchronziation_node "${cpp_typesupport_target}")
 ament_export_dependencies(rosidl_default_runtime)
 install(TARGETS
   #lj_t8
@@ -52,6 +54,7 @@ install(TARGETS
   labjack_hmi_control
   labjack_dio_reader
   labjack_dac_writer
+  time_synchronziation_node
   #stream_callback  
   #simple_t8
   DESTINATION lib/${PROJECT_NAME})# uncomment the following section in order to fill in
