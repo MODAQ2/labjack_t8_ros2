@@ -10,8 +10,12 @@
 
 
 
-This package requires the installation of the Labjack Linux Library "labjack_ljm_1.22.0.zip"
-Minimum Version (tested): 1.22.0
-URL:https://files.labjack.com/installers/LJM/Linux/x64/release/
+This package requires the installation of the Labjack Linux Library LabJack-LJM_2025-05-07.zip. 
 
-Directions: see INSTALL.md in zip folder
+Please select the library version based on your controller's CPU architecture:
+
+[Labjack LJM Download x64](https://files.labjack.com/installers/LJM/Linux/x64/release/)
+
+[Labjack LJM Download arm64](https://files.labjack.com/installers/LJM/Linux/AArch64/release/)
+
+Directions for installation: see INSTALL.md in zip folder.
