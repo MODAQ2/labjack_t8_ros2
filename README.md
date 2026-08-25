@@ -16,6 +16,6 @@ Please select the library version based on your controller's CPU architecture:
 
  [Labjack LJM Install Directions for x64](https://support.labjack.com/docs/ljm-software-installer-linux-x64) | [Labjack LJM Download x64](https://files.labjack.com/installers/LJM/Linux/x64/release/)
 
- [Labjack LJM Install Directions for ARM64](https://support.labjack.com/docs/ljm-software-installer-linux-arm-family)) | [Labjack LJM Download arm64](https://files.labjack.com/installers/LJM/Linux/AArch64/release/)
+ [Labjack LJM Install Directions for ARM64](https://support.labjack.com/docs/ljm-software-installer-linux-arm-family) | [Labjack LJM Download arm64](https://files.labjack.com/installers/LJM/Linux/AArch64/release/)
 
 Directions for installation: see INSTALL.md in zip folder.
