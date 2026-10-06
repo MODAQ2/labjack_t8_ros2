@@ -34,7 +34,7 @@ public:
       : Node("labjack_ain_reader")
   {
     // Declare and get parameters
-    this->declare_parameter<std::string>("IPAddress", "10.10.0.6");
+    this->declare_parameter<std::string>("IPAddress", "10.10.59.99");
     IPAddress = this->get_parameter("IPAddress").as_string();
     this->declare_parameter<double>("SampleRate", 10000);
     INIT_SCAN_RATE = this->get_parameter("SampleRate").as_double();
